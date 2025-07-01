@@ -13,14 +13,23 @@ const __dirname = dirname(__filename);
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
+const allowedOrigins = [
+  '*',
+  'http://localhost:3000',
+  'https://yourcanvas.vercel.app'
+];
+
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'https://yourcanvas.vercel.app',
-    /\.vercel\.app$/ 
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true 
 };
 
 app.use(cors(corsOptions));
