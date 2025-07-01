@@ -14,7 +14,6 @@ const app = express();
 const upload = multer({ dest: 'uploads/' });
 
 const allowedOrigins = [
-  '*',
   'http://localhost:3000',
   'https://yourcanvas.vercel.app'
 ];
@@ -33,6 +32,14 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options(/.*/, (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://yourcanvas.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
